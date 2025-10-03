@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>D&D Club — Photo Gallery</title>
+  <meta name="description" content="Photo gallery for D&D Club meetings and student activities." />
+  <style>
+    :root{
+      --brand:#02104f;      /* your primary */
+      --ink:#0f172a;        /* dark text */
+      --bg:#f7f8fc;         /* page background */
+      --card:#ffffff;       /* card background */
+      --muted:#64748b;      /* subtle text */
+      --ring:rgba(2,16,79,.25);
+      --shadow:0 10px 30px rgba(2,16,79,.12);
+      --radius:14px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      color:var(--ink);
+      background:linear-gradient(180deg, #ffffff 0%, var(--bg) 100%);
+    }
+
+    /* Header */
+    header{
+      position:sticky; top:0; z-index:10;
+      background:#fff8;
+      backdrop-filter:saturate(120%) blur(6px);
+      border-bottom:1px solid #e6e9f2;
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:16px 20px}
+    h1{
+      margin:0;
+      font-weight:800; letter-spacing:.2px;
+      color:var(--brand);
+      font-size: clamp(20px, 3.2vw, 32px);
+    }
+    .sub{
+      margin:6px 0 0 0; color:var(--muted); font-size:14px;
+    }
+
+    /* Gallery grid */
+    .gallery{
+      max-width:1100px;
+      margin: 18px auto 36px;
+      padding: 0 16px 24px;
+      display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(180px, 1fr));
+      gap:12px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid #e6e9f2;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    }
+    .card:focus-within,
+    .card:hover{
+      transform: translateY(-2px);
+      border-color: var(--ring);
+      box-shadow: 0 16px 36px rgba(2,16,79,.18);
+    }
+    .thumb{
+      display:block;
+      width:100%; height:180px; object-fit:cover;
+      background:#dde3f3;
+    }
+    .cap{
+      padding:8px 10px;
+      font-size:13px;
+      color:var(--muted);
+      display:flex; align-items:center; justify-content:space-between;
+      gap:8px;
+    }
+    .cap b{ color:#1f2937; font-weight:600; }
+
+    /* Lightbox */
+    .lightbox{
+      display:none;
+      position:fixed; inset:0; z-index:9999;
+      background: rgba(0,0,0,.88);
+      align-items:center; justify-content:center;
+      padding: 24px;
+    }
+    .lightbox:target{ display:flex; }
+    .lightbox-inner{
+      position:relative; max-width:min(96vw,1100px); max-height:90vh;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .lightbox img{
+      max-width:100%; max-height:90vh; border-radius:12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.45);
+    }
+    .lb-close, .lb-prev, .lb-next{
+      position:absolute; top:50%; transform:translateY(-50%);
+      background: #ffffff;
+      color: var(--brand);
+      text-decoration:none;
+      border-radius:999px;
+      width:40px; height:40px; display:grid; place-items:center;
+      font-weight:700;
+      box-shadow: 0 6px 18px rgba(0,0,0,.25);
+      outline: none;
+    }
+    .lb-prev{ left:-12px; }
+    .lb-next{ right:-12px; }
+    .lb-close{
+      top:-14px; right:-14px; transform:none;
+      width:42px; height:42px;
+      background: var(--brand); color:#fff;
+      font-size:22px; line-height:1;
+    }
+    @media (max-width:520px){
+      .thumb{ height:145px; }
+      .lb-prev{ left:-6px }
+      .lb-next{ right:-6px }
+    }
+
+    /* Footer note */
+    footer{
+      text-align:center; color:var(--muted); font-size:12px;
+      padding: 0 16px 30px;
+    }
+
+    /* No-jump fix for :target on the page */
+    .lightbox:target{ scroll-margin-top: 0 }
+    /* Allow closing by clicking the dark background (via an invisible full-bleed link) */
+    .lb-bg{
+      position:fixed; inset:0; display:block; content:"";
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>D&D Club — Photo Gallery</h1>
+      <p class="sub">Tap a photo to view. Use ◀ ▶ inside the viewer to navigate.</p>
+    </div>
+  </header>
+
+  <main>
+    <div id="gallery" class="gallery" aria-live="polite"></div>
+
+    <!-- Lightboxes will be injected here -->
+    <div id="lightboxes"></div>
+  </main>
+
+  <footer>
+    <div class="wrap">If this is embedded in Google Sites, resize the Embed block to be wide and tall enough to avoid scroll bars.</div>
+  </footer>
+
+  <noscript>
+    <div class="wrap" style="color:#b91c1c; font-weight:600">
+      This gallery needs JavaScript enabled to auto-generate the images.
+    </div>
+  </noscript>
+
+  <script>
+    // ----- CONFIG -----
+    const COUNT = 40; // total images
+    const BASE  = "https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery";
+    const EXT   = ".webp";
+
+    const galleryEl   = document.getElementById("gallery");
+    const lightboxesEl= document.getElementById("lightboxes");
+
+    const pad2 = n => String(n).padStart(2, "0");
+
+    // Build gallery cards + lightboxes
+    for (let i = 1; i <= COUNT; i++) {
+      const num  = i;
+      const num2 = pad2(i);
+      const url  = `${BASE}${num2}${EXT}`;
+      const anchorId = `img${num}`;
+
+      // Card (thumbnail)
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <a href="#${anchorId}" aria-label="Open photo ${num}">
+          <img class="thumb" loading="lazy" src="${url}" alt="D&D Club Photo ${num2}">
+        </a>
+        <div class="cap">
+          <b>Photo ${num2}</b>
+          <span>${url.split('/').pop()}</span>
+        </div>
+      `;
+      galleryEl.appendChild(card);
+
+      // Lightbox (full image) with prev/next + close
+      const prevId = `img${num === 1 ? COUNT : num - 1}`;
+      const nextId = `img${num === COUNT ? 1 : num + 1}`;
+
+      const lb = document.createElement("div");
+      lb.className = "lightbox";
+      lb.id = anchorId;
+      lb.innerHTML = `
+        <a class="lb-bg" href="#" aria-label="Close"></a>
+        <div class="lightbox-inner">
+          <a class="lb-prev" href="#${prevId}" aria-label="Previous">◀</a>
+          <img src="${url}" alt="D&D Club Photo ${num2}">
+          <a class="lb-next" href="#${nextId}" aria-label="Next">▶</a>
+          <a class="lb-close" href="#" aria-label="Close">&times;</a>
+        </div>
+      `;
+      lightboxesEl.appendChild(lb);
+    }
+
+    // Optional: trap focus inside lightbox for better accessibility (minimal)
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && location.hash.startsWith("#img")) {
+        location.hash = "";
+      }
+    });
+  </script>
+</body>
+</html>

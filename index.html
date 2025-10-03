@@ -134,6 +134,59 @@
     .lb-bg{
       position:fixed; inset:0; display:block; content:"";
     }
+
+
+        /* Overlay covers only the visible viewport */
+    #modal{
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: var(--overlay);
+      display: flex;                 /* center the box in the viewport */
+      align-items: center;
+      justify-content: center;
+      overscroll-behavior: contain;
+    }
+
+    /* Size the modal box to the viewport, not the page height */
+    :root{
+      --modal-w:      760px;   /* overall modal width (tweak me) */
+      --modal-info-w: 300px;   /* right pane width (tweak me) */
+      --modal-max-h:  88vh;    /* height cap relative to viewport */
+    }
+    @supports (height: 100dvh){
+      :root{ --modal-max-h: 88dvh; } /* more reliable on mobile */
+    }
+
+    .modal-wrap{
+      width: min(var(--modal-w), 92vw);
+      max-height: var(--modal-max-h);
+      display: grid;
+      grid-template-columns: 1fr var(--modal-info-w);
+      border-radius: 16px;
+      overflow: hidden;              /* keep internals clipped if tall */
+    }
+
+    /* Left side (image) fills but never exceeds viewport */
+    .modal-media{
+      background: var(--modal-media-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-media img{
+      max-width: 100%;
+      max-height: calc(var(--modal-max-h) - 32px);
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+
+    /* Right pane scrolls internally if content is long */
+    .modal-info{
+      background: var(--modal-bg)
+
   </style>
 </head>
 <body>
@@ -182,7 +235,10 @@
         <a href="#${anchorId}" aria-label="Open photo ${num}">
           <img class="thumb" loading="lazy" src="${url}" alt="D&D Club Photo ${num2}">
         </a>
-        
+        <div class="cap">
+          <b>Photo ${num2}</b>
+          <span>${url.split('/').pop()}</span>
+        </div>
       `;
       galleryEl.appendChild(card);
 

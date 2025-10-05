@@ -8,12 +8,13 @@
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      background: #f4f4f9;
+      background: #02104f;
+      color: #f2f3f5;
     }
     h1 {
       text-align: center;
       padding: 1rem;
-      color: #02104f;
+      color: #ead1dc;
     }
     .gallery {
       display: grid;
@@ -28,6 +29,7 @@
       border-radius: 8px;
       cursor: pointer;
       transition: transform 0.2s ease;
+      background:#0b155b;
     }
     .gallery img:hover {
       transform: scale(1.05);
@@ -39,25 +41,29 @@
       z-index: 9999;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background: rgba(0,0,0,0.85);
+      background: rgba(0,0,0,0.88);
       justify-content: center;
       align-items: center;
+      padding: 24px;
     }
+    .lightbox:target { display: flex; }
     .lightbox img {
       max-width: 90%;
       max-height: 90%;
       border-radius: 8px;
-    }
-    .lightbox:target {
-      display: flex;
+      box-shadow: 0 10px 30px rgba(0,0,0,.45);
     }
     .close {
       position: absolute;
       top: 20px;
       right: 30px;
-      font-size: 30px;
+      font-size: 32px;
       color: white;
       text-decoration: none;
+      width:42px;height:42px;border-radius:999px;
+      display:grid;place-items:center;
+      background:#ead1dc;color:#020617;
+      box-shadow:0 6px 18px rgba(0,0,0,.25);
     }
   </style>
 </head>
@@ -104,9 +110,167 @@
     <a href="#img38"><img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery38.webp" alt="D&D Club Photo 38"></a>
     <a href="#img39"><img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery39.webp" alt="D&D Club Photo 39"></a>
     <a href="#img40"><img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery40.webp" alt="D&D Club Photo 40"></a>
-
-
   </div>
 
+  <div class="lightbox" id="img1">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery01.webp" alt="D&D Club Photo 01">
+    </div>
+    <div class="lightbox" id="img2">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery02.webp" alt="D&D Club Photo 02">
+    </div>
+    <div class="lightbox" id="img3">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery03.webp" alt="D&D Club Photo 03">
+    </div>
+    <div class="lightbox" id="img4">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery04.webp" alt="D&D Club Photo 04">
+    </div>
+    <div class="lightbox" id="img5">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery05.webp" alt="D&D Club Photo 05">
+    </div>
+    <div class="lightbox" id="img6">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery06.webp" alt="D&D Club Photo 06">
+    </div>
+    <div class="lightbox" id="img7">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery07.webp" alt="D&D Club Photo 07">
+    </div>
+    <div class="lightbox" id="img8">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery08.webp" alt="D&D Club Photo 08">
+    </div>
+    <div class="lightbox" id="img9">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery09.webp" alt="D&D Club Photo 09">
+    </div>
+    <div class="lightbox" id="img10">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery10.webp" alt="D&D Club Photo 10">
+    </div>
+    <div class="lightbox" id="img11">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery11.webp" alt="D&D Club Photo 11">
+    </div>
+    <div class="lightbox" id="img12">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery12.webp" alt="D&D Club Photo 12">
+    </div>
+    <div class="lightbox" id="img13">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery13.webp" alt="D&D Club Photo 13">
+    </div>
+    <div class="lightbox" id="img14">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery14.webp" alt="D&D Club Photo 14">
+    </div>
+    <div class="lightbox" id="img15">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery15.webp" alt="D&D Club Photo 15">
+    </div>
+    <div class="lightbox" id="img16">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery16.webp" alt="D&D Club Photo 16">
+    </div>
+    <div class="lightbox" id="img17">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery17.webp" alt="D&D Club Photo 17">
+    </div>
+    <div class="lightbox" id="img18">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery18.webp" alt="D&D Club Photo 18">
+    </div>
+    <div class="lightbox" id="img19">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery19.webp" alt="D&D Club Photo 19">
+    </div>
+    <div class="lightbox" id="img20">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery20.webp" alt="D&D Club Photo 20">
+    </div>
+    <div class="lightbox" id="img21">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery21.webp" alt="D&D Club Photo 21">
+    </div>
+    <div class="lightbox" id="img22">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery22.webp" alt="D&D Club Photo 22">
+    </div>
+    <div class="lightbox" id="img23">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery23.webp" alt="D&D Club Photo 23">
+    </div>
+    <div class="lightbox" id="img24">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery24.webp" alt="D&D Club Photo 24">
+    </div>
+    <div class="lightbox" id="img25">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery25.webp" alt="D&D Club Photo 25">
+    </div>
+    <div class="lightbox" id="img26">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery26.webp" alt="D&D Club Photo 26">
+    </div>
+    <div class="lightbox" id="img27">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery27.webp" alt="D&D Club Photo 27">
+    </div>
+    <div class="lightbox" id="img28">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery28.webp" alt="D&D Club Photo 28">
+    </div>
+    <div class="lightbox" id="img29">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery29.webp" alt="D&D Club Photo 29">
+    </div>
+    <div class="lightbox" id="img30">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery30.webp" alt="D&D Club Photo 30">
+    </div>
+    <div class="lightbox" id="img31">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery31.webp" alt="D&D Club Photo 31">
+    </div>
+    <div class="lightbox" id="img32">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery32.webp" alt="D&D Club Photo 32">
+    </div>
+    <div class="lightbox" id="img33">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery33.webp" alt="D&D Club Photo 33">
+    </div>
+    <div class="lightbox" id="img34">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery34.webp" alt="D&D Club Photo 34">
+    </div>
+    <div class="lightbox" id="img35">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery35.webp" alt="D&D Club Photo 35">
+    </div>
+    <div class="lightbox" id="img36">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery36.webp" alt="D&D Club Photo 36">
+    </div>
+    <div class="lightbox" id="img37">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery37.webp" alt="D&D Club Photo 37">
+    </div>
+    <div class="lightbox" id="img38">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery38.webp" alt="D&D Club Photo 38">
+    </div>
+    <div class="lightbox" id="img39">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery39.webp" alt="D&D Club Photo 39">
+    </div>
+    <div class="lightbox" id="img40">
+      <a class="close" href="#" aria-label="Close">&times;</a>
+      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery40.webp" alt="D&D Club Photo 40">
+    </div>
 </body>
 </html>

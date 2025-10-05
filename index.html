@@ -231,7 +231,7 @@
       // Card (thumbnail)
       const card = document.createElement("div");
       card.className = "card";
-      /* card.innerHTML = `
+      /card.innerHTML = `
         <a href="#${anchorId}" aria-label="Open photo ${num}">
           <img class="thumb" loading="lazy" src="${url}" alt="D&D Club Photo ${num2}">
         </a>
@@ -240,7 +240,7 @@
           <span>${url.split('/').pop()}</span>
         </div>
       `;
-      galleryEl.appendChild(card); */
+      galleryEl.appendChild(card);
 
       // Lightbox (full image) with prev/next + close
       const prevId = `img${num === 1 ? COUNT : num - 1}`;

@@ -46,6 +46,13 @@
     footer{text-align:center;color:var(--muted);font-size:12px;padding:0 16px 30px}
     .lightbox:target{scroll-margin-top:0}
     .lb-bg{position:fixed;inset:0;display:block;content:""}
+
+    /* Display the lightbox when script adds .show */
+    .lightbox.show { display: flex !important; }
+
+    /* Prevent page behind the modal from scrolling */
+    body.modal-open { overflow: hidden; }
+
   </style>
 </head>
 <body>
@@ -278,8 +285,37 @@
     
   </main>
 
-  <footer>
-    <div class="wrap">Embed this file directly in Google Sites via Insert → Embed → URL.</div>
-  </footer>
+  <script>
+/* Prevent Google Sites iframe jump on hash links */
+document.querySelectorAll('a[href^="#img"]').forEach(link=>{
+  link.addEventListener('click', e=>{
+    e.preventDefault();
+    const target = link.getAttribute('href');
+    history.pushState(null, "", target);   // updates hash
+    document.querySelector(target)?.classList.add("show");
+    document.body.classList.add("modal-open");
+  });
+});
+
+/* Close modal when background or × clicked */
+document.addEventListener('click', e=>{
+  if(e.target.matches('.lb-bg, .lb-close')){
+    e.preventDefault();
+    document.querySelectorAll('.lightbox.show').forEach(lb=>lb.classList.remove('show'));
+    document.body.classList.remove('modal-open');
+    history.pushState(null, "", " ");       // clears hash
+  }
+});
+
+/* Close on Esc */
+document.addEventListener('keydown', e=>{
+  if(e.key==="Escape"){
+    document.querySelectorAll('.lightbox.show').forEach(lb=>lb.classList.remove('show'));
+    document.body.classList.remove('modal-open');
+    history.pushState(null, "", " ");
+  }
+});
+</script>
+
 </body>
 </html>

@@ -163,36 +163,62 @@
       }
     });
   </script>
-  <script>
-    /* Prevent Google Sites iframe jump on hash links */
-    document.querySelectorAll('a[href^="#img"]').forEach(link=>{
-      link.addEventListener('click', e=>{
-        e.preventDefault();
-        const target = link.getAttribute('href');
-        history.pushState(null, "", target);   // updates hash
-        document.querySelector(target)?.classList.add("show");
-        document.body.classList.add("modal-open");
+      <script>
+       <script>
+    (function(){
+      // Helper to open/close a specific lightbox WITHOUT touching the hash
+      function openLightbox(id){
+        // hide any open
+        document.querySelectorAll('.lightbox.show').forEach(lb=>lb.classList.remove('show'));
+        const el = document.getElementById(id);
+        if(el){
+          el.classList.add('show');
+          document.body.classList.add('modal-open');
+        }
+      }
+      function closeLightbox(){
+        document.querySelectorAll('.lightbox.show').forEach(lb=>lb.classList.remove('show'));
+        document.body.classList.remove('modal-open');
+      }
+
+      // 1) Open: intercept clicks on any <a href="#imgX">
+      document.addEventListener('click', (e)=>{
+        const a = e.target.closest('a[href^="#img"]');
+        if(!a) return;
+        e.preventDefault();                // stop browser from jumping the iframe
+        const id = a.getAttribute('href').slice(1);  // "img12"
+        openLightbox(id);
       });
-    });
 
-    /* Close modal when background or × clicked */
-    document.addEventListener('click', e=>{
-      if(e.target.matches('.lb-bg, .lb-close')){
+      // 2) Close on background click or ×
+      document.addEventListener('click', (e)=>{
+        if(e.target.matches('.lb-bg, .lb-close')){
+          e.preventDefault();
+          closeLightbox();
+        }
+      });
+
+      // 3) Prev/Next inside modal (also href="#imgX" links)
+      document.addEventListener('click', (e)=>{
+        const nav = e.target.closest('.lb-prev, .lb-next');
+        if(!nav) return;
         e.preventDefault();
-        document.querySelectorAll('.lightbox.show').forEach(lb=>lb.classList.remove('show'));
-        document.body.classList.remove('modal-open');
-        history.pushState(null, "", " ");       // clears hash
-      }
-    });
+        const targetId = nav.getAttribute('href').slice(1); // "img11"/"img13"
+        openLightbox(targetId);
+      });
 
-    /* Close on Esc */
-    document.addEventListener('keydown', e=>{
-      if(e.key==="Escape"){
-        document.querySelectorAll('.lightbox.show').forEach(lb=>lb.classList.remove('show'));
-        document.body.classList.remove('modal-open');
-        history.pushState(null, "", " ");
+      // 4) ESC closes
+      document.addEventListener('keydown', (e)=>{
+        if(e.key === 'Escape') closeLightbox();
+      });
+
+      // 5) If the page loads with a hash, neutralize it so Sites doesn't center the iframe
+      if(location.hash && location.hash.startsWith('#img')){
+        history.replaceState(null, "", " "); // strip the hash without scrolling
       }
-    });
+    })();
+    </script>
+
 </script>
 
 </body>

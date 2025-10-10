@@ -28,26 +28,54 @@
     .gallery > a{display:block}
     .gallery > a > img.thumb{height:180px}
 
-    .lightbox{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.88);align-items:center;justify-content:center;padding:24px}
-    .lightbox:target{display:flex}
-    .lightbox-inner{position:relative;max-width:min(96vw,1100px);max-height:90vh;display:flex;align-items:center;justify-content:center}
-    .lightbox img{max-width:100%;max-height:90vh;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
-    .lb-close,.lb-prev,.lb-next{
-      position:absolute;top:50%;transform:translateY(-50%);
-      background:#ffffff;color:var(--brand);text-decoration:none;border-radius:999px;
-      width:40px;height:40px;display:grid;place-items:center;font-weight:700;box-shadow:0 6px 18px rgba(0,0,0,.25)
-    }
-    .lb-prev{left:-12px}
-    .lb-next{right:-12px}
-    .lb-close{top:-14px;right:-14px;transform:none;width:42px;height:42px;background:var(--brand);color:#fff;font-size:22px;line-height:1}
-    @media (max-width:520px){.thumb{height:145px}.lb-prev{left:-6px}.lb-next{right:-6px}}
+    
     footer{text-align:center;color:var(--muted);font-size:12px;padding:0 16px 30px}
-    .lightbox:target{scroll-margin-top:0}
-    .lb-bg{position:fixed;inset:0;display:block;content:""}
 
-    /* Click left/right half of the modal image to navigate */
-    .lightbox-inner { cursor: pointer; }
-    .lightbox img { user-select: none; -webkit-user-drag: none; }
+        /* Inline Details Panel (inside the grid, Google Sites-safe) */
+    .detail-panel{
+      grid-column: 1 / -1;
+      background: var(--card);
+      border: 1px solid #e6e9f2;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      display: none;
+      overflow: hidden;
+    }
+    .detail-panel.open{ display:block; }
+
+    .detail-inner{
+      display: grid;
+      grid-template-columns: minmax(0,1.1fr) minmax(0,1fr);
+      gap: 16px;
+      padding: 16px;
+      align-items: start;
+    }
+    .detail-img{
+      width: 100%;
+      max-height: 70vh;
+      object-fit: contain;
+      background: #dde3f3;
+      border-radius: 12px;
+    }
+    .detail-title{ font-weight: 700; color: #1f2937; }
+    .detail-actions{ display: flex; gap: 10px; align-items: center; margin-top: auto; flex-wrap: wrap; }
+
+    .btn{
+      appearance: none;
+      border: 1px solid #e6e9f2;
+      background: #fff;
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn:hover{ border-color: var(--ring); box-shadow: 0 4px 12px rgba(2,16,79,.12); }
+    .btn.icon{ width: 38px; height: 38px; display: grid; place-items: center; }
+
+    @media (max-width: 700px){
+      .detail-inner{ grid-template-columns: 1fr; }
+      .detail-img{ max-height: 50vh; }
+    }
 
   </style>
 </head>
@@ -110,230 +138,94 @@
       <a href="#img40"><img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery40.webp" alt="D&D Club Photo 40"></a>
     </div>
 
-    <div class="lightbox" id="img1">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery01.webp" alt="D&D Club Photo 01">
-    </div>
-    <div class="lightbox" id="img2">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery02.webp" alt="D&D Club Photo 02">
-    </div>
-    <div class="lightbox" id="img3">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery03.webp" alt="D&D Club Photo 03">
-    </div>
-    <div class="lightbox" id="img4">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery04.webp" alt="D&D Club Photo 04">
-    </div>
-    <div class="lightbox" id="img5">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery05.webp" alt="D&D Club Photo 05">
-    </div>
-    <div class="lightbox" id="img6">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery06.webp" alt="D&D Club Photo 06">
-    </div>
-    <div class="lightbox" id="img7">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery07.webp" alt="D&D Club Photo 07">
-    </div>
-    <div class="lightbox" id="img8">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery08.webp" alt="D&D Club Photo 08">
-    </div>
-    <div class="lightbox" id="img9">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery09.webp" alt="D&D Club Photo 09">
-    </div>
-    <div class="lightbox" id="img10">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery10.webp" alt="D&D Club Photo 10">
-    </div>
-    <div class="lightbox" id="img11">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery11.webp" alt="D&D Club Photo 11">
-    </div>
-    <div class="lightbox" id="img12">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery12.webp" alt="D&D Club Photo 12">
-    </div>
-    <div class="lightbox" id="img13">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery13.webp" alt="D&D Club Photo 13">
-    </div>
-    <div class="lightbox" id="img14">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery14.webp" alt="D&D Club Photo 14">
-    </div>
-    <div class="lightbox" id="img15">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery15.webp" alt="D&D Club Photo 15">
-    </div>
-    <div class="lightbox" id="img16">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery16.webp" alt="D&D Club Photo 16">
-    </div>
-    <div class="lightbox" id="img17">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery17.webp" alt="D&D Club Photo 17">
-    </div>
-    <div class="lightbox" id="img18">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery18.webp" alt="D&D Club Photo 18">
-    </div>
-    <div class="lightbox" id="img19">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery19.webp" alt="D&D Club Photo 19">
-    </div>
-    <div class="lightbox" id="img20">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery20.webp" alt="D&D Club Photo 20">
-    </div>
-    <div class="lightbox" id="img21">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery21.webp" alt="D&D Club Photo 21">
-    </div>
-    <div class="lightbox" id="img22">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery22.webp" alt="D&D Club Photo 22">
-    </div>
-    <div class="lightbox" id="img23">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery23.webp" alt="D&D Club Photo 23">
-    </div>
-    <div class="lightbox" id="img24">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery24.webp" alt="D&D Club Photo 24">
-    </div>
-    <div class="lightbox" id="img25">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery25.webp" alt="D&D Club Photo 25">
-    </div>
-    <div class="lightbox" id="img26">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery26.webp" alt="D&D Club Photo 26">
-    </div>
-    <div class="lightbox" id="img27">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery27.webp" alt="D&D Club Photo 27">
-    </div>
-    <div class="lightbox" id="img28">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery28.webp" alt="D&D Club Photo 28">
-    </div>
-    <div class="lightbox" id="img29">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery29.webp" alt="D&D Club Photo 29">
-    </div>
-    <div class="lightbox" id="img30">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery30.webp" alt="D&D Club Photo 30">
-    </div>
-    <div class="lightbox" id="img31">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery31.webp" alt="D&D Club Photo 31">
-    </div>
-    <div class="lightbox" id="img32">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery32.webp" alt="D&D Club Photo 32">
-    </div>
-    <div class="lightbox" id="img33">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery33.webp" alt="D&D Club Photo 33">
-    </div>
-    <div class="lightbox" id="img34">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery34.webp" alt="D&D Club Photo 34">
-    </div>
-    <div class="lightbox" id="img35">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery35.webp" alt="D&D Club Photo 35">
-    </div>
-    <div class="lightbox" id="img36">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery36.webp" alt="D&D Club Photo 36">
-    </div>
-    <div class="lightbox" id="img37">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery37.webp" alt="D&D Club Photo 37">
-    </div>
-    <div class="lightbox" id="img38">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery38.webp" alt="D&D Club Photo 38">
-    </div>
-    <div class="lightbox" id="img39">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery39.webp" alt="D&D Club Photo 39">
-    </div>
-    <div class="lightbox" id="img40">
-      <a class="close" href="#" aria-label="Close">&times;</a>
-      <img src="https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery40.webp" alt="D&D Club Photo 40">
-    </div>
-    <div id="lightboxes">
-      <!-- PASTE YOUR LIGHTBOX <div id="imgX" ...> BLOCKS HERE -->
-    </div>
+   <div id="detail-panel" class="detail-panel" aria-live="polite" aria-hidden="true"></div>
+
   </main>
-<script>
-  // --- Click left/right half of the image to go Prev/Next ---
-  document.addEventListener('click', function (e) {
-    const inner = e.target.closest('.lightbox-inner');
-    if (!inner) return;
 
-    // Ignore direct clicks on the buttons or close/background
-    if (e.target.matches('.lb-prev, .lb-next, .lb-close, .lb-bg')) return;
+    <script>
+    const galleryEl = document.getElementById("thumbs");
+    const panel     = document.getElementById("detail-panel");
+    const links     = Array.from(galleryEl.querySelectorAll(":scope > a"));
+    const urls      = links.map(a => {
+      const img = a.querySelector("img");
+      img.classList.add("thumb");
+      return img.src;
+    });
+    const COUNT = urls.length;
+    const state = { current: null };
+    const pad2  = n => String(n).padStart(2,"0");
 
-    const rect = inner.getBoundingClientRect();
-    const x = e.clientX - rect.left;
+    // Attach click handlers
+    links.forEach((a, i) => {
+      a.dataset.index = i + 1;
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        openPanel(i + 1, a);
+      });
+    });
 
-    const prevLink = inner.querySelector('.lb-prev');
-    const nextLink = inner.querySelector('.lb-next');
+    // Keyboard: ESC / arrows
+    document.addEventListener("keydown", (e) => {
+      if (!panel.classList.contains("open")) return;
+      if (e.key === "Escape") closePanel();
+      if (e.key === "ArrowLeft")  openPanel(prevIndex(state.current));
+      if (e.key === "ArrowRight") openPanel(nextIndex(state.current));
+    });
 
-    if (x < rect.width / 2 && prevLink) {
-      // Left half -> Prev
-      e.preventDefault();
-      const id = prevLink.getAttribute('href').slice(1);
-      // Use your existing openLightbox helper if present:
-      if (typeof openLightbox === 'function') { openLightbox(id); }
-      else {
-        // Fallback: simulate click (for gallery.html where you may not have openLightbox)
-        document.getElementById(id)?.classList.add('show');
+    function prevIndex(i){ return i === 1 ? COUNT : i - 1; }
+    function nextIndex(i){ return i === COUNT ? 1 : i + 1; }
+
+    function openPanel(i, afterEl){
+      state.current = i;
+
+      // Place the panel after the clicked thumbnail so it feels inline
+      if (afterEl && galleryEl.contains(afterEl)) {
+        galleryEl.insertBefore(panel, afterEl.nextElementSibling);
+      } else {
+        galleryEl.appendChild(panel);
       }
-    } else if (x >= rect.width / 2 && nextLink) {
-      // Right half -> Next
-      e.preventDefault();
-      const id = nextLink.getAttribute('href').slice(1);
-      if (typeof openLightbox === 'function') { openLightbox(id); }
-      else {
-        document.getElementById(id)?.classList.add('show');
-      }
+
+      renderPanel(i);
+      panel.classList.add("open");
+      panel.setAttribute("aria-hidden","false");
+      panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
-  });
 
-  // --- Optional: Arrow keys navigate Prev/Next too ---
-  document.addEventListener('keydown', function (e) {
-    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-    const open = document.querySelector('.lightbox.show');
-    if (!open) return;
-
-    const prevLink = open.querySelector('.lb-prev');
-    const nextLink = open.querySelector('.lb-next');
-
-    if (e.key === 'ArrowLeft' && prevLink) {
-      e.preventDefault();
-      const id = prevLink.getAttribute('href').slice(1);
-      if (typeof openLightbox === 'function') { openLightbox(id); }
-      else { document.getElementById(id)?.classList.add('show'); }
+    function closePanel(){
+      panel.classList.remove("open");
+      panel.setAttribute("aria-hidden","true");
+      state.current = null;
     }
-    if (e.key === 'ArrowRight' && nextLink) {
-      e.preventDefault();
-      const id = nextLink.getAttribute('href').slice(1);
-      if (typeof openLightbox === 'function') { openLightbox(id); }
-      else { document.getElementById(id)?.classList.add('show'); }
-    }
-  });
-</script>
 
+    function renderPanel(i){
+      const src  = urls[i - 1];
+      const prev = prevIndex(i);
+      const next = nextIndex(i);
+
+      panel.innerHTML = `
+        <div class="detail-inner">
+          <img class="detail-img" src="${src}" alt="D&D Club Photo ${pad2(i)}">
+          <div class="detail-meta">
+            <div class="detail-title">Photo ${pad2(i)}</div>
+
+            <div class="detail-actions">
+              <button class="btn icon" data-nav="${prev}" aria-label="Previous">◀</button>
+              <button class="btn icon" data-nav="${next}" aria-label="Next">▶</button>
+
+              <a class="btn" href="${src}" target="_blank" rel="noopener">Open full size</a>
+
+              <button class="btn" data-close style="margin-left:auto">Close ✕</button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      panel.querySelector("[data-close]").onclick = closePanel;
+      panel.querySelectorAll("[data-nav]").forEach(b => {
+        b.onclick = () => openPanel(parseInt(b.dataset.nav, 10));
+      });
+    }
+  </script>
 
 </body>
 </html>

@@ -44,6 +44,11 @@
     footer{text-align:center;color:var(--muted);font-size:12px;padding:0 16px 30px}
     .lightbox:target{scroll-margin-top:0}
     .lb-bg{position:fixed;inset:0;display:block;content:""}
+
+    /* Click left/right half of the modal image to navigate */
+    .lightbox-inner { cursor: pointer; }
+    .lightbox img { user-select: none; -webkit-user-drag: none; }
+
   </style>
 </head>
 <body>
@@ -269,9 +274,66 @@
       <!-- PASTE YOUR LIGHTBOX <div id="imgX" ...> BLOCKS HERE -->
     </div>
   </main>
+<script>
+  // --- Click left/right half of the image to go Prev/Next ---
+  document.addEventListener('click', function (e) {
+    const inner = e.target.closest('.lightbox-inner');
+    if (!inner) return;
 
-  <footer>
-    <div class="wrap">Embed this file directly in Google Sites via Insert → Embed → URL.</div>
-  </footer>
+    // Ignore direct clicks on the buttons or close/background
+    if (e.target.matches('.lb-prev, .lb-next, .lb-close, .lb-bg')) return;
+
+    const rect = inner.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+
+    const prevLink = inner.querySelector('.lb-prev');
+    const nextLink = inner.querySelector('.lb-next');
+
+    if (x < rect.width / 2 && prevLink) {
+      // Left half -> Prev
+      e.preventDefault();
+      const id = prevLink.getAttribute('href').slice(1);
+      // Use your existing openLightbox helper if present:
+      if (typeof openLightbox === 'function') { openLightbox(id); }
+      else {
+        // Fallback: simulate click (for gallery.html where you may not have openLightbox)
+        document.getElementById(id)?.classList.add('show');
+      }
+    } else if (x >= rect.width / 2 && nextLink) {
+      // Right half -> Next
+      e.preventDefault();
+      const id = nextLink.getAttribute('href').slice(1);
+      if (typeof openLightbox === 'function') { openLightbox(id); }
+      else {
+        document.getElementById(id)?.classList.add('show');
+      }
+    }
+  });
+
+  // --- Optional: Arrow keys navigate Prev/Next too ---
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    const open = document.querySelector('.lightbox.show');
+    if (!open) return;
+
+    const prevLink = open.querySelector('.lb-prev');
+    const nextLink = open.querySelector('.lb-next');
+
+    if (e.key === 'ArrowLeft' && prevLink) {
+      e.preventDefault();
+      const id = prevLink.getAttribute('href').slice(1);
+      if (typeof openLightbox === 'function') { openLightbox(id); }
+      else { document.getElementById(id)?.classList.add('show'); }
+    }
+    if (e.key === 'ArrowRight' && nextLink) {
+      e.preventDefault();
+      const id = nextLink.getAttribute('href').slice(1);
+      if (typeof openLightbox === 'function') { openLightbox(id); }
+      else { document.getElementById(id)?.classList.add('show'); }
+    }
+  });
+</script>
+
+
 </body>
 </html>

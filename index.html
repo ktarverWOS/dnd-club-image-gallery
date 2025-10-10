@@ -44,13 +44,15 @@
       transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
     }
     .card:focus-within,.card:hover{transform:translateY(-2px);border-color:var(--ring);box-shadow:0 16px 36px rgba(2,16,79,.18)}
-    .thumb{display:block;width:100%;height:180px;object-fit:cover;background:#dde3f3;border:0}
-    .cap{display:none}
+    .thumb{display:block;width:100%;height:180px;object-fit:cover;background:#dde3f3}
+    .cap{padding:8px 10px;font-size:13px;color:var(--muted);display: none;align-items:center;justify-content:space-between;gap:8px}
+    .cap b{color:#1f2937;font-weight:600}
 
     .lightbox{
       display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.88);
       align-items:center;justify-content:center;padding:24px;
     }
+    .lightbox:target{display:flex}
     .lightbox-inner{position:relative;max-width:min(96vw,1100px);max-height:90vh;display:flex;align-items:center;justify-content:center}
     .lightbox img{max-width:100%;max-height:90vh;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
     .lb-close,.lb-prev,.lb-next{
@@ -63,107 +65,87 @@
     .lb-close{top:-14px;right:-14px;transform:none;width:42px;height:42px;background:var(--brand);color:#02104f;font-size:22px;line-height:1}
     @media (max-width:520px){.thumb{height:145px}.lb-prev{left:-6px}.lb-next{right:-6px}}
     footer{text-align:center;color:var(--muted);font-size:12px;padding:0 16px 30px}
+    .lightbox:target{scroll-margin-top:0}
     .lb-bg{position:fixed;inset:0;display:block;content:""}
-
-    /* --- Google Sites anti-jump modal control --- */
-    .lightbox { display: none; }                 /* default hidden */
-    .lightbox:target { display: none !important;}/* kill hash behavior */
-    .lightbox.show,
-    .lightbox.show:target { display:flex !important; } /* JS-driven open */
-    body.modal-open { overflow:hidden; }                /* lock background */
   </style>
 </head>
 <body>
   <header>
     <div class="wrap">
       <h1>D&D Club — Photo Gallery</h1>
-      <p class="sub">Tap a photo to view. Use ◀ ▶ inside the viewer to navigate.</p>
-    </div>
+          </div>
   </header>
 
   <main>
-    <!-- Place lightboxes BEFORE gallery to avoid any residual scroll -->
-    <div id="lightboxes"></div>
     <div id="gallery" class="gallery" aria-live="polite"></div>
+    <div id="lightboxes"></div>
   </main>
 
   <footer>
     <div class="wrap">If this is embedded in Google Sites, resize the Embed block to avoid scroll bars.</div>
   </footer>
 
+  <noscript>
+    <div class="wrap" style="color:#b91c1c;font-weight:600">
+      This gallery needs JavaScript enabled to auto-generate the images.
+    </div>
+  </noscript>
+
   <script>
-  // Build the gallery and lightboxes (40 images) and intercept clicks to avoid hash scrolling
-  document.addEventListener('DOMContentLoaded', function(){
-    const COUNT = 40;
+    // ===== CONFIG =====
+    const COUNT = 40; // total images
     const BASE  = "https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery";
     const EXT   = ".webp";
-    const pad2  = n => String(n).padStart(2,"0");
+    // ==================
 
-    const galleryEl    = document.getElementById('gallery');
-    const lightboxesEl = document.getElementById('lightboxes');
+    const galleryEl    = document.getElementById("gallery");
+    const lightboxesEl = document.getElementById("lightboxes");
+    const pad2 = n => String(n).padStart(2, "0");
 
-    for (let i=1;i<=COUNT;i++){
+    for (let i = 1; i <= COUNT; i++) {
       const num2 = pad2(i);
-      const id   = "img"+i;
-      const url  = BASE+num2+EXT;
+      const url  = `${BASE}${num2}${EXT}`;
+      const anchorId = `img${i}`;
 
-      // lightbox
-      const lb = document.createElement('div');
-      lb.className = 'lightbox';
-      lb.id = id;
-      lb.innerHTML = \`
+      // Card
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <a href="#${anchorId}" aria-label="Open photo ${i}">
+          <img class="thumb" loading="lazy" src="${url}" alt="D&D Club Photo ${num2}">
+        </a>
+        <div class="cap">
+          <b>Photo ${num2}</b>
+          <span>${url.split('/').pop()}</span>
+        </div>
+      `;
+      galleryEl.appendChild(card);
+
+      // Lightbox
+      const prevId = `img${i === 1 ? COUNT : i - 1}`;
+      const nextId = `img${i === COUNT ? 1 : i + 1}`;
+
+      const lb = document.createElement("div");
+      lb.className = "lightbox";
+      lb.id = anchorId;
+      lb.innerHTML = `
         <a class="lb-bg" href="#" aria-label="Close"></a>
         <div class="lightbox-inner">
-          <a class="lb-prev" href="#img\${i===1?COUNT:i-1}" aria-label="Previous">◀</a>
-          <img src="\${url}" alt="D&D Club Photo \${num2}">
-          <a class="lb-next" href="#img\${i===COUNT?1:i+1}" aria-label="Next">▶</a>
+          <a class="lb-prev" href="#${prevId}" aria-label="Previous">◀</a>
+          <img src="${url}" alt="D&D Club Photo ${num2}">
+          <a class="lb-next" href="#${nextId}" aria-label="Next">▶</a>
           <a class="lb-close" href="#" aria-label="Close">&times;</a>
-        </div>\`;
+        </div>
+      `;
       lightboxesEl.appendChild(lb);
-
-      // card
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = \`
-        <a href="#\${id}" aria-label="Open photo \${i}">
-          <img class="thumb" loading="lazy" src="\${url}" alt="D&D Club Photo \${num2}">
-        </a>\`;
-      galleryEl.appendChild(card);
     }
 
-    function openLightbox(id){
-      document.querySelectorAll('.lightbox.show').forEach(el=>el.classList.remove('show'));
-      const el = document.getElementById(id);
-      if(el){ el.classList.add('show'); document.body.classList.add('modal-open'); }
-    }
-    function closeLightbox(){
-      document.querySelectorAll('.lightbox.show').forEach(el=>el.classList.remove('show'));
-      document.body.classList.remove('modal-open');
-    }
-
-    // Intercept all #imgX links (thumbs, prev, next)
-    document.addEventListener('click', function(e){
-      const a = e.target.closest('a[href^="#img"]');
-      if(!a) return;
-      e.preventDefault();
-      openLightbox(a.getAttribute('href').slice(1));
+    // ESC to close
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && location.hash.startsWith("#img")) {
+        location.hash = "";
+      }
     });
-
-    // Close by clicking the dim background or the ×
-    document.addEventListener('click', function(e){
-      if(e.target.matches('.lb-bg, .lb-close')){ e.preventDefault(); closeLightbox(); }
-    });
-
-    // ESC closes
-    document.addEventListener('keydown', function(e){
-      if(e.key==='Escape') closeLightbox();
-    });
-
-    // Strip a starting hash if present (Sites sometimes injects it)
-    if(location.hash && /^#img\d+$/i.test(location.hash)){
-      try{ history.replaceState(null,'',' ');}catch(_){}
-    }
-  });
   </script>
 </body>
 </html>

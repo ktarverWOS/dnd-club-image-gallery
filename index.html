@@ -48,57 +48,25 @@
     .cap{padding:8px 10px;font-size:13px;color:var(--muted);display: none;align-items:center;justify-content:space-between;gap:8px}
     .cap b{color:#1f2937;font-weight:600}
 
-    
-    
-     footer{text-align:center;color:var(--muted);font-size:12px;padding:0 16px 30px}
-
-    /* Inline Details Panel (inside the grid, Google Sites-safe) */
-    .detail-panel{
-      grid-column: 1 / -1;
-      background: var(--card);
-      border: 1px solid #e6e9f2;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      display: none;
-      overflow: hidden;
+    .lightbox{
+      display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.88);
+      align-items:center;justify-content:center;padding:24px;
     }
-    .detail-panel.open{ display:block; }
-
-    .detail-inner{
-      display: grid;
-      grid-template-columns: minmax(0,1.1fr) minmax(0,1fr);
-      gap: 16px;
-      padding: 16px;
-      align-items: start;
+    .lightbox:target{display:flex}
+    .lightbox-inner{position:relative;max-width:min(96vw,1100px);max-height:90vh;display:flex;align-items:center;justify-content:center}
+    .lightbox img{max-width:100%;max-height:90vh;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+    .lb-close,.lb-prev,.lb-next{
+      position:absolute;top:50%;transform:translateY(-50%);
+      background:#02104f;color:var(--brand);text-decoration:none;border-radius:999px;
+      width:40px;height:40px;display:grid;place-items:center;font-weight:700;box-shadow:0 6px 18px rgba(0,0,0,.25);outline:none;
     }
-    .detail-img{
-      width: 100%;
-      max-height: 70vh;
-      object-fit: contain;
-      background: #dde3f3;
-      border-radius: 12px;
-    }
-    .detail-title{ font-weight: 700; color: #1f2937; }
-    .detail-actions{ display: flex; gap: 10px; align-items: center; margin-top: auto; flex-wrap: wrap; }
-
-    .btn{
-      appearance: none;
-      border: 1px solid #e6e9f2;
-      background: #fff;
-      padding: 8px 12px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    .btn:hover{ border-color: var(--ring); box-shadow: 0 4px 12px rgba(2,16,79,.12); }
-    .btn.icon{ width: 38px; height: 38px; display: grid; place-items: center; }
-
-    @media (max-width: 700px){
-      .detail-inner{ grid-template-columns: 1fr; }
-      .detail-img{ max-height: 50vh; }
-    }
-        
-
+    .lb-prev{left:-12px}
+    .lb-next{right:-12px}
+    .lb-close{top:-14px;right:-14px;transform:none;width:42px;height:42px;background:var(--brand);color:#02104f;font-size:22px;line-height:1}
+    @media (max-width:520px){.thumb{height:145px}.lb-prev{left:-6px}.lb-next{right:-6px}}
+    footer{text-align:center;color:var(--muted);font-size:12px;padding:0 16px 30px}
+    .lightbox:target{scroll-margin-top:0}
+    .lb-bg{position:fixed;inset:0;display:block;content:""}
   </style>
 </head>
 <body>
@@ -110,9 +78,12 @@
 
   <main>
     <div id="gallery" class="gallery" aria-live="polite"></div>
-    <div id="detail-panel" class="detail-panel" aria-live="polite" aria-hidden="true"></div>
+    <div id="lightboxes"></div>
   </main>
 
+  <footer>
+    <div class="wrap">If this is embedded in Google Sites, resize the Embed block to avoid scroll bars.</div>
+  </footer>
 
   <noscript>
     <div class="wrap" style="color:#b91c1c;font-weight:600">
@@ -121,116 +92,60 @@
   </noscript>
 
   <script>
-
-      
     // ===== CONFIG =====
     const COUNT = 40; // total images
     const BASE  = "https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery";
     const EXT   = ".webp";
     // ==================
 
-    const galleryEl = document.getElementById("gallery");
-    const panel     = document.getElementById("detail-panel");
-    const urls      = [];
-    const state     = { current: null };
-
+    const galleryEl    = document.getElementById("gallery");
+    const lightboxesEl = document.getElementById("lightboxes");
     const pad2 = n => String(n).padStart(2, "0");
 
-    // Build cards
     for (let i = 1; i <= COUNT; i++) {
       const num2 = pad2(i);
       const url  = `${BASE}${num2}${EXT}`;
-      urls.push(url);
+      const anchorId = `img${i}`;
 
+      // Card
       const card = document.createElement("div");
       card.className = "card";
       card.innerHTML = `
-        <a href="#" class="open" data-index="${i}" aria-label="Open photo ${i}">
+        <a href="#${anchorId}" aria-label="Open photo ${i}">
           <img class="thumb" loading="lazy" src="${url}" alt="D&D Club Photo ${num2}">
         </a>
-        <div class="cap" aria-hidden="true" hidden>
+        <div class="cap">
           <b>Photo ${num2}</b>
           <span>${url.split('/').pop()}</span>
         </div>
       `;
       galleryEl.appendChild(card);
-    }
 
-    // Event delegation for opening the details panel
-    galleryEl.addEventListener("click", (e) => {
-      const a = e.target.closest("a.open");
-      if (!a) return;
-      e.preventDefault();
-      const idx = parseInt(a.dataset.index, 10);
-      openPanel(idx, a.closest(".card") || a);
-    });
+      // Lightbox
+      const prevId = `img${i === 1 ? COUNT : i - 1}`;
+      const nextId = `img${i === COUNT ? 1 : i + 1}`;
 
-    // Keyboard shortcuts when panel is open
-    document.addEventListener("keydown", (e) => {
-      if (!panel.classList.contains("open")) return;
-      if (e.key === "Escape") { closePanel(); }
-      if (e.key === "ArrowLeft")  { openPanel(prevIndex(state.current)); }
-      if (e.key === "ArrowRight") { openPanel(nextIndex(state.current)); }
-    });
-
-    function prevIndex(i){ return i === 1 ? COUNT : i - 1; }
-    function nextIndex(i){ return i === COUNT ? 1 : i + 1; }
-
-    function openPanel(i, afterEl){
-      state.current = i;
-
-      // Place the panel immediately after the clicked card so it appears "inline"
-      if (afterEl && galleryEl.contains(afterEl)) {
-        galleryEl.insertBefore(panel, afterEl.nextElementSibling);
-      } else {
-        galleryEl.appendChild(panel);
-      }
-
-      renderPanel(i);
-      panel.classList.add("open");
-      panel.setAttribute("aria-hidden","false");
-      panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    }
-
-    function closePanel(){
-      panel.classList.remove("open");
-      panel.setAttribute("aria-hidden","true");
-      state.current = null;
-    }
-
-    function renderPanel(i){
-      const num2 = pad2(i);
-      const src  = urls[i - 1];
-      const prev = prevIndex(i);
-      const next = nextIndex(i);
-
-      panel.innerHTML = `
-        <div class="detail-inner">
-          <img class="detail-img" src="${src}" alt="D&D Club Photo ${num2}">
-          <div class="detail-meta">
-            <div class="detail-title">Photo ${num2}</div>
-
-            <div class="detail-actions">
-              <button class="btn icon" data-nav="${prev}" aria-label="Previous">◀</button>
-              <button class="btn icon" data-nav="${next}" aria-label="Next">▶</button>
-
-              <a class="btn" href="${src}" target="_blank" rel="noopener">Open full size</a>
-
-              <button class="btn" data-close style="margin-left:auto">Close ✕</button>
-            </div>
-          </div>
+      const lb = document.createElement("div");
+      lb.className = "lightbox";
+      lb.id = anchorId;
+      lb.innerHTML = `
+        <a class="lb-bg" href="#" aria-label="Close"></a>
+        <div class="lightbox-inner">
+          <a class="lb-prev" href="#${prevId}" aria-label="Previous">◀</a>
+          <img src="${url}" alt="D&D Club Photo ${num2}">
+          <a class="lb-next" href="#${nextId}" aria-label="Next">▶</a>
+          <a class="lb-close" href="#" aria-label="Close">&times;</a>
         </div>
       `;
-
-      panel.querySelector("[data-close]").onclick = closePanel;
-      panel.querySelectorAll("[data-nav]").forEach(b => {
-        b.onclick = () => openPanel(parseInt(b.dataset.nav, 10));
-      });
+      lightboxesEl.appendChild(lb);
     }
 
-
+    // ESC to close
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && location.hash.startsWith("#img")) {
+        location.hash = "";
+      }
+    });
   </script>
-
-  
 </body>
 </html>

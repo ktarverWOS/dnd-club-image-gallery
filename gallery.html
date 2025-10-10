@@ -63,6 +63,23 @@
     /* Lock page scroll when modal open */
     body.modal-open { overflow: hidden; }
 
+    /* --- Google Sites anti-jump modal control --- */
+
+    /* default: hidden */
+    .lightbox { display: none; }
+
+    /* STOP the hash-based behavior from ever showing or scrolling */
+    .lightbox:target { display: none !important; }
+
+    /* JS-driven show state — must come LAST and override everything */
+    .lightbox.show,
+    .lightbox.show:target {            /* in case a hash slips in */
+      display: flex !important;
+    }
+
+    /* lock page scroll while a modal is open */
+    body.modal-open { overflow: hidden; }
+
   </style>
 </head>
 <body>
@@ -296,62 +313,51 @@
   </main>
 
   <script>
-    <script>
-(function(){
-  // Helper to open/close a specific lightbox WITHOUT touching the hash
+document.addEventListener('DOMContentLoaded', function () {
+
   function openLightbox(id){
-    // hide any open
-    document.querySelectorAll('.lightbox.show').forEach(lb=>lb.classList.remove('show'));
+    // close any open
+    document.querySelectorAll('.lightbox.show').forEach(el => el.classList.remove('show'));
     const el = document.getElementById(id);
-    if(el){
+    if (el) {
       el.classList.add('show');
       document.body.classList.add('modal-open');
     }
   }
+
   function closeLightbox(){
-    document.querySelectorAll('.lightbox.show').forEach(lb=>lb.classList.remove('show'));
+    document.querySelectorAll('.lightbox.show').forEach(el => el.classList.remove('show'));
     document.body.classList.remove('modal-open');
   }
 
-  // 1) Open: intercept clicks on any <a href="#imgX">
-  document.addEventListener('click', (e)=>{
+  // Intercept ALL links that point to #imgX (thumbs, prev, next)
+  document.addEventListener('click', function(e){
     const a = e.target.closest('a[href^="#img"]');
-    if(!a) return;
-    e.preventDefault();                // stop browser from jumping the iframe
-    const id = a.getAttribute('href').slice(1);  // "img12"
+    if (!a) return;
+
+    e.preventDefault();                        // stop the iframe scroll
+    const id = a.getAttribute('href').slice(1); // "img12"
     openLightbox(id);
   });
 
-  // 2) Close on background click or ×
-  document.addEventListener('click', (e)=>{
-    if(e.target.matches('.lb-bg, .lb-close')){
+  // Close by clicking background or ×
+  document.addEventListener('click', function(e){
+    if (e.target.matches('.lb-bg, .lb-close')) {
       e.preventDefault();
       closeLightbox();
     }
   });
 
-  // 3) Prev/Next inside modal (also href="#imgX" links)
-  document.addEventListener('click', (e)=>{
-    const nav = e.target.closest('.lb-prev, .lb-next');
-    if(!nav) return;
-    e.preventDefault();
-    const targetId = nav.getAttribute('href').slice(1); // "img11"/"img13"
-    openLightbox(targetId);
+  // Esc closes
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') closeLightbox();
   });
 
-  // 4) ESC closes
-  document.addEventListener('keydown', (e)=>{
-    if(e.key === 'Escape') closeLightbox();
-  });
-
-  // 5) If the page loads with a hash, neutralize it so Sites doesn't center the iframe
-  if(location.hash && location.hash.startsWith('#img')){
-    history.replaceState(null, "", " "); // strip the hash without scrolling
+  // If page loaded with a #img… hash, strip it so Sites can't center the iframe
+  if (location.hash && /^#img\d+$/i.test(location.hash)) {
+    try { history.replaceState(null, '', ' '); } catch(_) {}
   }
-})();
-</script>
-
-    });
+});
 </script>
 
 </body>

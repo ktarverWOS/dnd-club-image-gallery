@@ -87,139 +87,75 @@
     /* Lock page scroll when modal open */
     body.modal-open { overflow: hidden; }
 
+
+     /* --- Google Sites anti-jump modal control --- */
+
+    /* default: hidden */
+    .lightbox { display: none; }
+
+    /* STOP the hash-based behavior from ever showing or scrolling */
+    .lightbox:target { display: none !important; }
+
+    /* JS-driven show state — must come LAST and override everything */
+    .lightbox.show,
+    .lightbox.show:target {            /* in case a hash slips in */
+      display: flex !important;
+    }
+
+    /* lock page scroll while a modal is open */
+    body.modal-open { overflow: hidden; }
+     
   </style>
 </head>
 <body>
-  <header>
-    <div class="wrap">
-      <h1>D&D Club — Photo Gallery</h1>
-          </div>
-  </header>
-
-  <main>
-    <div id="lightboxes"></div>
-    <div id="gallery" class="gallery" aria-live="polite"></div>
-      </main>
-
-  <noscript>
-    <div class="wrap" style="color:#b91c1c;font-weight:600">
-      This gallery needs JavaScript enabled to auto-generate the images.
-    </div>
-  </noscript>
-
   <script>
-    // ===== CONFIG =====
-    const COUNT = 40; // total images
-    const BASE  = "https://raw.githubusercontent.com/ktarverWOS/dnd-club-image-gallery/main/assets/img_gallery";
-    const EXT   = ".webp";
-    // ==================
+document.addEventListener('DOMContentLoaded', function () {
 
-    const galleryEl    = document.getElementById("gallery");
-    const lightboxesEl = document.getElementById("lightboxes");
-    const pad2 = n => String(n).padStart(2, "0");
-
-    for (let i = 1; i <= COUNT; i++) {
-      const num2 = pad2(i);
-      const url  = `${BASE}${num2}${EXT}`;
-      const anchorId = `img${i}`;
-
-      // Card
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = `
-        <a href="#${anchorId}" aria-label="Open photo ${i}">
-          <img class="thumb" loading="lazy" src="${url}" alt="D&D Club Photo ${num2}">
-        </a>
-        <div class="cap">
-          <b>Photo ${num2}</b>
-          <span>${url.split('/').pop()}</span>
-        </div>
-      `;
-      galleryEl.appendChild(card);
-
-      // Lightbox
-      const prevId = `img${i === 1 ? COUNT : i - 1}`;
-      const nextId = `img${i === COUNT ? 1 : i + 1}`;
-
-      const lb = document.createElement("div");
-      lb.className = "lightbox";
-      lb.id = anchorId;
-      lb.innerHTML = `
-        <a class="lb-bg" href="#" aria-label="Close"></a>
-        <div class="lightbox-inner">
-          <a class="lb-prev" href="#${prevId}" aria-label="Previous">◀</a>
-          <img src="${url}" alt="D&D Club Photo ${num2}">
-          <a class="lb-next" href="#${nextId}" aria-label="Next">▶</a>
-          <a class="lb-close" href="#" aria-label="Close">&times;</a>
-        </div>
-      `;
-      lightboxesEl.appendChild(lb);
+  function openLightbox(id){
+    // close any open
+    document.querySelectorAll('.lightbox.show').forEach(el => el.classList.remove('show'));
+    const el = document.getElementById(id);
+    if (el) {
+      el.classList.add('show');
+      document.body.classList.add('modal-open');
     }
+  }
 
-    // ESC to close
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && location.hash.startsWith("#img")) {
-        location.hash = "";
-      }
-    });
-  </script>
-      <script>
-       <script>
-    (function(){
-      // Helper to open/close a specific lightbox WITHOUT touching the hash
-      function openLightbox(id){
-        // hide any open
-        document.querySelectorAll('.lightbox.show').forEach(lb=>lb.classList.remove('show'));
-        const el = document.getElementById(id);
-        if(el){
-          el.classList.add('show');
-          document.body.classList.add('modal-open');
-        }
-      }
-      function closeLightbox(){
-        document.querySelectorAll('.lightbox.show').forEach(lb=>lb.classList.remove('show'));
-        document.body.classList.remove('modal-open');
-      }
+  function closeLightbox(){
+    document.querySelectorAll('.lightbox.show').forEach(el => el.classList.remove('show'));
+    document.body.classList.remove('modal-open');
+  }
 
-      // 1) Open: intercept clicks on any <a href="#imgX">
-      document.addEventListener('click', (e)=>{
-        const a = e.target.closest('a[href^="#img"]');
-        if(!a) return;
-        e.preventDefault();                // stop browser from jumping the iframe
-        const id = a.getAttribute('href').slice(1);  // "img12"
-        openLightbox(id);
-      });
+  // Intercept ALL links that point to #imgX (thumbs, prev, next)
+  document.addEventListener('click', function(e){
+    const a = e.target.closest('a[href^="#img"]');
+    if (!a) return;
 
-      // 2) Close on background click or ×
-      document.addEventListener('click', (e)=>{
-        if(e.target.matches('.lb-bg, .lb-close')){
-          e.preventDefault();
-          closeLightbox();
-        }
-      });
+    e.preventDefault();                        // stop the iframe scroll
+    const id = a.getAttribute('href').slice(1); // "img12"
+    openLightbox(id);
+  });
 
-      // 3) Prev/Next inside modal (also href="#imgX" links)
-      document.addEventListener('click', (e)=>{
-        const nav = e.target.closest('.lb-prev, .lb-next');
-        if(!nav) return;
-        e.preventDefault();
-        const targetId = nav.getAttribute('href').slice(1); // "img11"/"img13"
-        openLightbox(targetId);
-      });
+  // Close by clicking background or ×
+  document.addEventListener('click', function(e){
+    if (e.target.matches('.lb-bg, .lb-close')) {
+      e.preventDefault();
+      closeLightbox();
+    }
+  });
 
-      // 4) ESC closes
-      document.addEventListener('keydown', (e)=>{
-        if(e.key === 'Escape') closeLightbox();
-      });
+  // Esc closes
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') closeLightbox();
+  });
 
-      // 5) If the page loads with a hash, neutralize it so Sites doesn't center the iframe
-      if(location.hash && location.hash.startsWith('#img')){
-        history.replaceState(null, "", " "); // strip the hash without scrolling
-      }
-    })();
-    </script>
-
+  // If page loaded with a #img… hash, strip it so Sites can't center the iframe
+  if (location.hash && /^#img\d+$/i.test(location.hash)) {
+    try { history.replaceState(null, '', ' '); } catch(_) {}
+  }
+});
 </script>
+
 
 </body>
 </html>
